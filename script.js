@@ -604,28 +604,12 @@ function initializeDemoData() {
 function generateInitialAlerts() {
     const alertTemplates = [
         {
-            ticker: 'SBUX',
-            type: 'critical',
-            message: 'Q4 China same-store sales -9% vs guidance of +5%. Management pulls back on 2024 expansion plans.',
-            drivers: ['China expansion'],
-            confidence: 95,
-            source: 'Earnings Call'
-        },
-        {
             ticker: 'MSFT',
             type: 'warning',
             message: 'Azure growth decelerated to 28% from 31% last quarter. AWS gaining share in enterprise.',
             drivers: ['Azure growth'],
             confidence: 85,
             source: 'Quarterly Filing'
-        },
-        {
-            ticker: 'XOM',
-            type: 'info',
-            message: 'OPEC+ extends production cuts through Q2 2024. Oil futures up 3%.',
-            drivers: ['Oil price'],
-            confidence: 90,
-            source: 'Breaking News'
         }
     ];
 
@@ -919,7 +903,7 @@ function renderMonitoring() {
             title: 'Regulatory Filings',
             icon: '📄',
             status: 'active',
-            lastUpdate: '2 min ago',
+            lastUpdate: '2 min ago (15:21:15)',
             totalItems: 1247,
             subCategories: [
                 { name: '10-K', description: 'Annual reports', count: 45, status: 'active' },
@@ -935,7 +919,7 @@ function renderMonitoring() {
             title: 'Insider & Institutional Activity',
             icon: '👥',
             status: 'active',
-            lastUpdate: '45 sec ago',
+            lastUpdate: '45 sec ago (15:22:30)',
             totalItems: 892,
             subCategories: [
                 { name: 'Form 4', description: 'Insider transactions', count: 234, status: 'active' },
@@ -951,7 +935,7 @@ function renderMonitoring() {
             title: 'Corporate Communications',
             icon: '📢',
             status: 'active',
-            lastUpdate: '1 min ago',
+            lastUpdate: '1 min ago (15:22:15)',
             totalItems: 3456,
             subCategories: [
                 { name: 'Earnings Calls', description: 'Transcripts & Q&A', count: 89, status: 'active' },
@@ -966,7 +950,7 @@ function renderMonitoring() {
             title: 'Market Intelligence',
             icon: '📰',
             status: 'active',
-            lastUpdate: '15 sec ago',
+            lastUpdate: '15 sec ago (15:23:00)',
             totalItems: 7476,
             subCategories: [
                 { name: 'Bloomberg Terminal', description: 'Breaking news & alerts', count: 2341, status: 'active' },
@@ -982,7 +966,7 @@ function renderMonitoring() {
             title: 'Social Sentiment',
             icon: '📱',
             status: 'active',
-            lastUpdate: '30 sec ago',
+            lastUpdate: '30 sec ago (15:22:45)',
             totalItems: 45821,
             subCategories: [
                 { name: 'Twitter/X', description: 'Company mentions & FinTwit', count: 23456, status: 'active' },
@@ -997,7 +981,7 @@ function renderMonitoring() {
             title: 'Alternative Data',
             icon: '🛰️',
             status: 'active',
-            lastUpdate: '5 min ago',
+            lastUpdate: '5 min ago (15:18:15)',
             totalItems: 458,
             subCategories: [
                 { name: 'Satellite Imagery', description: 'Store traffic & inventory', count: 45, status: 'active' },
@@ -1012,7 +996,7 @@ function renderMonitoring() {
             title: 'Macro & Market Data',
             icon: '📊',
             status: 'active',
-            lastUpdate: '10 min ago',
+            lastUpdate: '10 min ago (15:13:15)',
             totalItems: 234,
             subCategories: [
                 { name: 'Economic Calendar', description: 'FOMC/CPI/GDP releases', count: 45, status: 'active' },
@@ -1027,7 +1011,7 @@ function renderMonitoring() {
             title: 'Real-Time Flows',
             icon: '⚡',
             status: 'processing',
-            lastUpdate: '3 min ago',
+            lastUpdate: '3 min ago (15:20:15)',
             totalItems: 2341,
             subCategories: [
                 { name: 'Options Flow', description: 'Unusual activity', count: 567, status: 'active' },
@@ -1042,10 +1026,10 @@ function renderMonitoring() {
             title: 'Sell-Side Research',
             icon: '🏦',
             status: 'active',
-            lastUpdate: '1 hour ago',
+            lastUpdate: '1 hour ago (14:23:15)',
             totalItems: 3456,
             subCategories: [
-                { name: 'JPMorgan', description: 'Equity research & ratings', count: 456, status: 'active' },
+                { name: 'Barclays', description: 'Equity research & ratings', count: 456, status: 'active' },
                 { name: 'Goldman Sachs', description: 'Research notes & models', count: 523, status: 'active' },
                 { name: 'Morgan Stanley', description: 'Sector analysis & calls', count: 478, status: 'active' },
                 { name: 'Evercore ISI', description: 'Deep dive reports', count: 234, status: 'active' },
@@ -1062,7 +1046,7 @@ function renderMonitoring() {
             title: 'Biotech & Pharma Intelligence',
             icon: '🧬',
             status: 'active',
-            lastUpdate: '30 min ago',
+            lastUpdate: '30 min ago (14:53:15)',
             totalItems: 1823,
             subCategories: [
                 { name: 'FDA Submissions', description: 'NDA/BLA/ANDA filings', count: 234, status: 'active' },
@@ -1544,7 +1528,7 @@ function getPositionNews(position) {
         {
             source: 'Market Update',
             headline: 'No significant news affecting thesis drivers at this time.',
-            time: '1 hour ago',
+            time: '1 hour ago (14:23:15)',
             icon: '📰',
             impact: 'Low',
             confidence: 50
