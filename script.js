@@ -1333,7 +1333,7 @@ function getPositionNews(position) {
             {
                 source: 'Quarterly Report',
                 headline: 'Azure growth decelerated to 28% from 31% last quarter. AWS gaining enterprise share.',
-                time: '1 hour ago',
+                time: '1 hour ago (14:23:15)',
                 icon: '📊',
                 impact: 'Medium',
                 confidence: 85,
@@ -1346,7 +1346,7 @@ function getPositionNews(position) {
             {
                 source: 'Industry Report',
                 headline: 'Gartner positions Microsoft as leader in AI workspace tools, ahead of Google.',
-                time: '4 hours ago',
+                time: '4 hours ago (11:23:15)',
                 icon: '📈',
                 impact: 'Low',
                 confidence: 80,
@@ -1361,7 +1361,7 @@ function getPositionNews(position) {
             {
                 source: 'Product Launch',
                 headline: 'H100 chips seeing 6-month waiting lists. Demand exceeding supply estimates.',
-                time: '3 hours ago',
+                time: '3 hours ago (12:23:15)',
                 icon: '🔥',
                 impact: 'High',
                 confidence: 90,
@@ -1374,7 +1374,7 @@ function getPositionNews(position) {
             {
                 source: 'Competitor News',
                 headline: 'AMD announces MI300X competing with H100. Price point 20% below NVIDIA.',
-                time: '1 day ago',
+                time: '1 day ago (15:23:15)',
                 icon: '⚔️',
                 impact: 'Medium',
                 confidence: 85,
@@ -1389,7 +1389,7 @@ function getPositionNews(position) {
             {
                 source: 'Earnings Call',
                 headline: 'FSD Beta showing 40% improvement in intervention rates. Robotaxi timeline moved to 2025.',
-                time: '2 hours ago',
+                time: '2 hours ago (13:23:15)',
                 icon: '🚗',
                 impact: 'High',
                 confidence: 85,
@@ -1402,7 +1402,7 @@ function getPositionNews(position) {
             {
                 source: 'Production Update',
                 headline: 'Cybertruck production challenges continue. Q1 deliveries only 2,000 units.',
-                time: '1 day ago',
+                time: '1 day ago (15:23:15)',
                 icon: '🔧',
                 impact: 'Medium',
                 confidence: 92,
@@ -1417,7 +1417,7 @@ function getPositionNews(position) {
             {
                 source: 'Regulatory News',
                 headline: 'China announces easing of tech crackdown. Antitrust fines may be reduced.',
-                time: '4 hours ago',
+                time: '4 hours ago (11:23:15)',
                 icon: '🇨🇳',
                 impact: 'High',
                 confidence: 80,
@@ -1430,7 +1430,7 @@ function getPositionNews(position) {
             {
                 source: 'Earnings Preview',
                 headline: 'Cloud division expected to report first quarterly profit in Q4.',
-                time: '6 hours ago',
+                time: '6 hours ago (09:23:15)',
                 icon: '☁️',
                 impact: 'Medium',
                 confidence: 75,
@@ -1445,7 +1445,7 @@ function getPositionNews(position) {
             {
                 source: 'FDA Update',
                 headline: 'Mounjaro supply constraints easing. Manufacturing capacity up 200% QoQ.',
-                time: '1 hour ago',
+                time: '1 hour ago (14:23:15)',
                 icon: '💊',
                 impact: 'High',
                 confidence: 95,
@@ -1458,7 +1458,7 @@ function getPositionNews(position) {
             {
                 source: 'Clinical Trial',
                 headline: 'Alzheimer\'s drug donanemab shows 35% slowing of cognitive decline.',
-                time: '3 hours ago',
+                time: '3 hours ago (12:23:15)',
                 icon: '🧠',
                 impact: 'High',
                 confidence: 90,
@@ -1473,7 +1473,7 @@ function getPositionNews(position) {
             {
                 source: 'Product Launch',
                 headline: 'Reality Labs announces Quest 3S with 40% lower price point.',
-                time: '2 hours ago',
+                time: '2 hours ago (13:23:15)',
                 icon: '🥽',
                 impact: 'Medium',
                 confidence: 82,
@@ -1486,7 +1486,7 @@ function getPositionNews(position) {
             {
                 source: 'Advertising Update',
                 headline: 'Instagram Reels ad revenue run rate exceeds $15B annually.',
-                time: '5 hours ago',
+                time: '5 hours ago (10:23:15)',
                 icon: '📱',
                 impact: 'High',
                 confidence: 88,
@@ -1501,7 +1501,7 @@ function getPositionNews(position) {
             {
                 source: 'Company Update',
                 headline: 'No updates on clinical programs. Last readout was 14 months ago.',
-                time: '1 day ago',
+                time: '1 day ago (15:23:15)',
                 icon: '⏰',
                 impact: 'Low',
                 confidence: 95,
@@ -1514,7 +1514,7 @@ function getPositionNews(position) {
             {
                 source: 'Financial Filing',
                 headline: 'Cash runway estimated at 2.5 quarters based on current burn rate.',
-                time: '3 days ago',
+                time: '3 days ago (09:15:30)',
                 icon: '💰',
                 impact: 'Medium',
                 confidence: 90,
@@ -1527,7 +1527,7 @@ function getPositionNews(position) {
             {
                 source: 'Sector Analysis',
                 headline: 'Trading at 15x premium to gene editing peers despite no near-term catalysts.',
-                time: '1 week ago',
+                time: '1 week ago (16:45:22)',
                 icon: '📊',
                 impact: 'Medium',
                 confidence: 85,
@@ -1843,14 +1843,32 @@ function degradeRandomThesis() {
 // Utility Functions
 function getTimeAgo(date) {
     const seconds = Math.floor((new Date() - date) / 1000);
+    const timeString = date.toLocaleTimeString('en-US', { 
+        hour12: false,
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+    });
     
-    if (seconds < 60) return `${seconds} seconds ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} minutes ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hours ago`;
-    const days = Math.floor(hours / 24);
-    return `${days} days ago`;
+    let relativeTime;
+    if (seconds < 60) {
+        relativeTime = `${seconds} seconds ago`;
+    } else {
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) {
+            relativeTime = `${minutes} minutes ago`;
+        } else {
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) {
+                relativeTime = `${hours} hours ago`;
+            } else {
+                const days = Math.floor(hours / 24);
+                relativeTime = `${days} days ago`;
+            }
+        }
+    }
+    
+    return `${relativeTime} (${timeString})`;
 }
 
 function getAlertIcon(type) {
