@@ -2148,6 +2148,36 @@ function renderStockDetailContent(position) {
             </div>
         </div>
         
+        <!-- Stock Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">${position.ticker} Price Chart</div>
+                <div class="chart-controls">
+                    <button class="time-range-btn" data-range="1D">1D</button>
+                    <button class="time-range-btn" data-range="5D">5D</button>
+                    <button class="time-range-btn active" data-range="1M">1M</button>
+                    <button class="time-range-btn" data-range="3M">3M</button>
+                    <button class="time-range-btn" data-range="6M">6M</button>
+                    <button class="time-range-btn" data-range="1Y">1Y</button>
+                </div>
+            </div>
+            <div class="chart-wrapper" id="stockChart"></div>
+            <div class="news-markers-legend">
+                <div class="legend-item">
+                    <div class="legend-marker critical">!</div>
+                    <span>Critical News</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-marker positive">↗</div>
+                    <span>Positive News</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-marker neutral">i</div>
+                    <span>General Updates</span>
+                </div>
+            </div>
+        </div>
+        
         <!-- Thesis Drivers -->
         <div class="stock-section">
             <h3>${isShort ? 'Short Thesis Drivers' : 'Thesis Drivers'}</h3>
@@ -2247,6 +2277,232 @@ function renderStockDetailContent(position) {
             </div>
         </div>
     `;
+    
+    // Create stock chart after DOM is updated
+    setTimeout(() => {
+        createStockChart(position);
+    }, 100);
+}
+
+function createStockChart(position) {
+    const chartContainer = document.getElementById('stockChart');
+    if (!chartContainer) {
+        console.error('Chart container not found');
+        return;
+    }
+    
+    if (typeof LightweightCharts === 'undefined') {
+        console.error('LightweightCharts library not loaded');
+        return;
+    }
+    
+    // Clear any existing chart
+    chartContainer.innerHTML = '';
+    
+    try {
+        const chart = LightweightCharts.createChart(chartContainer, {
+        width: chartContainer.clientWidth,
+        height: 450,
+        layout: {
+            background: { color: '#0a0e1a' },
+            textColor: '#a0a9c1',
+        },
+        grid: {
+            vertLines: { color: '#2a3142' },
+            horzLines: { color: '#2a3142' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+            borderColor: '#485164',
+        },
+        timeScale: {
+            borderColor: '#485164',
+            timeVisible: true,
+            secondsVisible: false,
+        },
+    });
+
+    // Generate mock price data
+    const priceData = generateMockPriceData(position);
+    const newsEvents = generateNewsEvents(position);
+    
+    // Add line series
+    const lineSeries = chart.addLineSeries({
+        color: '#3b82f6',
+        lineWidth: 2,
+        crosshairMarkerVisible: true,
+        crosshairMarkerRadius: 4,
+        crosshairMarkerBorderColor: '#ffffff',
+        crosshairMarkerBackgroundColor: '#3b82f6',
+        lastValueVisible: true,
+        priceLineVisible: true,
+    });
+    
+    // Convert OHLC data to line data (using close prices)
+    const lineData = priceData.map(item => ({
+        time: item.time,
+        value: item.close
+    }));
+    
+    lineSeries.setData(lineData);
+    
+    // Add news event markers
+    const markers = newsEvents.map(event => {
+        const markerColor = event.type === 'critical' ? '#ef4444' : 
+                           event.type === 'positive' ? '#10b981' : '#3b82f6';
+        const markerText = event.type === 'critical' ? '!' : 
+                          event.type === 'positive' ? '↗' : 'i';
+        
+        return {
+            time: event.time,
+            position: 'aboveBar',
+            color: markerColor,
+            shape: 'circle',
+            text: markerText,
+            size: 1.5,
+        };
+    });
+    
+    lineSeries.setMarkers(markers);
+    
+    // Make chart responsive
+    window.addEventListener('resize', () => {
+        chart.applyOptions({ width: chartContainer.clientWidth });
+    });
+    
+    // Add time range button functionality
+    const timeRangeButtons = document.querySelectorAll('.time-range-btn');
+    timeRangeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            timeRangeButtons.forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Update chart data based on selected range
+            const range = btn.dataset.range;
+            const newData = generateMockPriceData(position, range);
+            const newLineData = newData.map(item => ({
+                time: item.time,
+                value: item.close
+            }));
+            lineSeries.setData(newLineData);
+        });
+    });
+    
+    } catch (error) {
+        console.error('Error creating chart:', error);
+        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 450px; color: var(--text-secondary);">Chart failed to load. Please refresh the page.</div>';
+    }
+}
+
+function generateMockPriceData(position, timeRange = '1M') {
+    const data = [];
+    const now = new Date();
+    const daysBack = timeRange === '1D' ? 1 : 
+                     timeRange === '5D' ? 5 :
+                     timeRange === '1M' ? 30 :
+                     timeRange === '3M' ? 90 :
+                     timeRange === '6M' ? 180 : 365;
+    
+    let basePrice = position.currentPrice || 100;
+    const dailyVolatility = 0.015; // 1.5% daily volatility
+    const newsEvents = generateNewsEvents(position);
+    const isShort = position.positionType === 'short';
+    
+    for (let i = daysBack; i >= 0; i--) {
+        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        // Check if there's a news event on this date
+        const newsEvent = newsEvents.find(event => event.time === dateStr);
+        let change = (Math.random() - 0.5) * dailyVolatility * 2;
+        
+        // Apply news impact to price movement
+        if (newsEvent) {
+            let newsImpact = 0;
+            if (newsEvent.type === 'critical') {
+                // Critical news: 3-8% impact
+                newsImpact = -(0.03 + Math.random() * 0.05);
+            } else if (newsEvent.type === 'positive') {
+                // Positive news: 2-6% impact
+                newsImpact = 0.02 + Math.random() * 0.04;
+            } else {
+                // Neutral news: small random impact
+                newsImpact = (Math.random() - 0.5) * 0.01;
+            }
+            
+            // For short positions, invert the impact
+            if (isShort) {
+                newsImpact = -newsImpact;
+            }
+            
+            change = newsImpact;
+        }
+        
+        // Generate OHLC data
+        const open = basePrice;
+        const close = open * (1 + change);
+        const high = Math.max(open, close) * (1 + Math.random() * 0.005);
+        const low = Math.min(open, close) * (1 - Math.random() * 0.005);
+        
+        data.push({
+            time: dateStr,
+            open: parseFloat(open.toFixed(2)),
+            high: parseFloat(high.toFixed(2)),
+            low: parseFloat(low.toFixed(2)),
+            close: parseFloat(close.toFixed(2))
+        });
+        
+        basePrice = close;
+    }
+    
+    return data;
+}
+
+function generateNewsEvents(position) {
+    const events = [];
+    const now = new Date();
+    
+    // Add some mock news events based on position
+    if (position.ticker === 'NVDA') {
+        events.push({
+            time: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            type: 'critical',
+            title: 'China Export Restrictions',
+            description: 'New U.S. export controls on AI chips'
+        });
+        events.push({
+            time: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            type: 'positive',
+            title: 'Q3 Earnings Beat',
+            description: 'Revenue up 206% YoY'
+        });
+    } else if (position.ticker === 'TSLA') {
+        events.push({
+            time: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            type: 'positive',
+            title: 'FSD Milestone',
+            description: 'Intervention rate drops 67%'
+        });
+        events.push({
+            time: new Date(now.getTime() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            type: 'critical',
+            title: 'Cybertruck Delays',
+            description: 'Production issues continue'
+        });
+    } else if (position.ticker === 'MSFT') {
+        events.push({
+            time: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            type: 'critical',
+            title: 'Azure Growth Slows',
+            description: 'Growth decelerates to 28%'
+        });
+    }
+    
+    return events;
 }
 
 // Add CSS animation for pulse
