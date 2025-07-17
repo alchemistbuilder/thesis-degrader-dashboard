@@ -638,6 +638,9 @@ function renderCurrentView() {
         case 'monitoring':
             renderMonitoring();
             break;
+        case 'daily-summary':
+            renderDailySummary();
+            break;
         case 'heatmap':
             renderHeatmap();
             break;
@@ -763,9 +766,6 @@ function createAlertElement(alert) {
                     <span>🎯</span> Impacts: ${alert.drivers.join(', ')}
                 </span>
             </div>
-        </div>
-        <div style="position: absolute; top: 1rem; right: 1rem; opacity: 0.5; font-size: 0.75rem; color: var(--text-tertiary);">
-            Click to view position
         </div>
     `;
     
@@ -1142,6 +1142,184 @@ function renderMonitoring() {
     });
     
     container.appendChild(grid);
+}
+
+function renderDailySummary() {
+    const container = document.getElementById('dailySummaryContainer');
+    container.innerHTML = '';
+    
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    // Generate thesis-changing events
+    const thesisChangingEvents = generateThesisChangingEvents();
+    const breakingNews = generateBreakingNews();
+    
+    container.innerHTML = `
+        <div class="summary-header">
+            <h3>Market Summary - ${dateStr}</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                End-of-day analysis of thesis-impacting events and market developments affecting our portfolio positions.
+            </p>
+        </div>
+        
+        <div class="summary-sections">
+            <div class="summary-section">
+                <h4>🎯 Thesis-Changing Events</h4>
+                <p class="section-description">
+                    Key developments that materially impact our investment thesis for specific positions.
+                </p>
+                <div class="thesis-events">
+                    ${thesisChangingEvents.map(event => `
+                        <div class="event-item thesis-event">
+                            <div class="event-header">
+                                <span class="event-ticker ${event.impact.toLowerCase()}">${event.ticker}</span>
+                                <span class="event-time">${event.time}</span>
+                            </div>
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-description">${event.description}</div>
+                            <div class="event-impact">
+                                <span class="impact-badge ${event.impact.toLowerCase()}">${event.impact} Impact</span>
+                                <span class="thesis-driver">Affects: ${event.driver}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h4>📰 Breaking News Review</h4>
+                <p class="section-description">
+                    Major market headlines with analysis of portfolio relevance.
+                </p>
+                <div class="breaking-news">
+                    ${breakingNews.map(news => `
+                        <div class="event-item news-event">
+                            <div class="event-header">
+                                <span class="news-source">${news.source}</span>
+                                <span class="event-time">${news.time}</span>
+                            </div>
+                            <div class="event-title">${news.headline}</div>
+                            <div class="portfolio-impact">
+                                <span class="impact-indicator ${news.portfolioImpact.toLowerCase()}">${news.portfolioImpact}</span>
+                                <span class="impact-explanation">${news.explanation}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <h4>🔇 Market Noise</h4>
+                <p class="section-description">
+                    General market activity and news that doesn't materially affect our positions.
+                </p>
+                <div class="market-noise">
+                    <div class="noise-summary">
+                        <div class="noise-stat">
+                            <span class="noise-number">847</span>
+                            <span class="noise-label">News Articles Filtered</span>
+                        </div>
+                        <div class="noise-stat">
+                            <span class="noise-number">234</span>
+                            <span class="noise-label">Social Media Mentions</span>
+                        </div>
+                        <div class="noise-stat">
+                            <span class="noise-number">12</span>
+                            <span class="noise-label">Sector Updates</span>
+                        </div>
+                    </div>
+                    <p class="noise-note">
+                        Our AI monitoring system filtered out general market commentary, routine earnings previews, 
+                        and sector-wide news that doesn't specifically impact our thesis drivers. 
+                        This allows us to focus on what truly matters for our investment decisions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateThesisChangingEvents() {
+    return [
+        {
+            ticker: 'NVDA',
+            title: 'China Export License Restrictions Tightened',
+            description: 'New U.S. export controls specifically target H100 and A100 chips to China, potentially reducing addressable market by 15-20%.',
+            time: '14:32:15',
+            impact: 'Critical',
+            driver: 'Data center growth >50%'
+        },
+        {
+            ticker: 'TSLA',
+            title: 'FSD Beta Intervention Rate Improvement',
+            description: 'Version 12.3 shows 67% reduction in interventions per mile, accelerating path to full autonomy and robotaxi deployment.',
+            time: '13:45:22',
+            impact: 'High',
+            driver: 'FSD adoption >30% take rate'
+        },
+        {
+            ticker: 'MSFT',
+            title: 'Azure Growth Deceleration Confirmed',
+            description: 'Management confirms Azure growth will moderate to 26-28% in Q1 as enterprise cloud spending normalizes post-pandemic.',
+            time: '11:23:45',
+            impact: 'Medium',
+            driver: 'Azure growth >25% YoY'
+        },
+        {
+            ticker: 'META',
+            title: 'Reality Labs Efficiency Gains',
+            description: 'Quest 3S launch strategy reduces hardware costs by 40% while maintaining feature set, improving path to profitability.',
+            time: '10:15:33',
+            impact: 'Medium',
+            driver: 'Metaverse adoption scaling'
+        }
+    ];
+}
+
+function generateBreakingNews() {
+    return [
+        {
+            headline: 'Federal Reserve Signals Potential Rate Cuts in Q2 2024',
+            source: 'Reuters',
+            time: '15:45:12',
+            portfolioImpact: 'Positive',
+            explanation: 'Lower rates benefit our growth-oriented tech positions, particularly NVDA and TSLA with high capex needs.'
+        },
+        {
+            headline: 'Oil Prices Surge 8% on Middle East Tensions',
+            source: 'Bloomberg',
+            time: '14:22:18',
+            portfolioImpact: 'Neutral',
+            explanation: 'No direct oil exposure in current portfolio. Minimal impact on our positions.'
+        },
+        {
+            headline: 'Bitcoin Reaches New All-Time High Above $75,000',
+            source: 'CoinDesk',
+            time: '13:33:44',
+            portfolioImpact: 'Neutral',
+            explanation: 'No crypto exposure. May benefit TSLA marginally through Bitcoin holdings on balance sheet.'
+        },
+        {
+            headline: 'China GDP Growth Slows to 4.8% in Q4',
+            source: 'Financial Times',
+            time: '12:15:27',
+            portfolioImpact: 'Negative',
+            explanation: 'Affects TSLA China operations and NVDA data center demand. Monitoring for thesis impact.'
+        },
+        {
+            headline: 'European Central Bank Holds Rates Steady',
+            source: 'Wall Street Journal',
+            time: '09:30:15',
+            portfolioImpact: 'Neutral',
+            explanation: 'Limited European exposure in current portfolio. No material impact expected.'
+        }
+    ];
 }
 
 function renderHeatmap() {

@@ -32,11 +32,14 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
     font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* Dashboard Layout */
@@ -51,10 +54,12 @@ body {
 .header {
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 2rem;
+    padding: 1.125rem 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .header-left {
@@ -64,9 +69,10 @@ body {
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.375rem;
+    font-weight: 600;
     color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .tagline {
@@ -96,6 +102,8 @@ body {
     font-size: 1.25rem;
     font-weight: 600;
     margin-top: 0.25rem;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: -0.01em;
 }
 
 .stat-value.positive {
@@ -295,12 +303,13 @@ body {
 .position-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
+    border-radius: 0.875rem;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .position-card:hover {
@@ -385,6 +394,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     margin-top: 0.25rem;
+    font-family: 'IBM Plex Mono', monospace;
 }
 
 .thesis-health {
@@ -977,6 +987,234 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--border-light);
+}
+
+/* Daily Summary Styles */
+.summary-date {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.daily-summary-container {
+    max-width: 1200px;
+}
+
+.summary-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.summary-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.summary-section {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.summary-section h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.section-description {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.thesis-events, .breaking-news {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.event-item {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    transition: all 0.2s;
+}
+
+.event-item:hover {
+    border-color: var(--border-light);
+    transform: translateY(-1px);
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.event-ticker {
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.event-ticker.critical {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--accent-danger);
+}
+
+.event-ticker.high {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--accent-warning);
+}
+
+.event-ticker.medium {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--accent-primary);
+}
+
+.event-time {
+    color: var(--text-tertiary);
+    font-size: 0.8125rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 400;
+}
+
+.event-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.event-description {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.event-impact {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.impact-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.impact-badge.critical {
+    background-color: var(--accent-danger);
+    color: white;
+}
+
+.impact-badge.high {
+    background-color: var(--accent-warning);
+    color: white;
+}
+
+.impact-badge.medium {
+    background-color: var(--accent-primary);
+    color: white;
+}
+
+.thesis-driver {
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+}
+
+.news-source {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.portfolio-impact {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-top: 0.75rem;
+}
+
+.impact-indicator {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.impact-indicator.positive {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--accent-success);
+}
+
+.impact-indicator.negative {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--accent-danger);
+}
+
+.impact-indicator.neutral {
+    background-color: rgba(107, 114, 128, 0.1);
+    color: var(--text-tertiary);
+}
+
+.impact-explanation {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.market-noise {
+    text-align: center;
+}
+
+.noise-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.noise-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bg-primary);
+    border-radius: 0.5rem;
+}
+
+.noise-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.noise-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.noise-note {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-style: italic;
 }
 
 /* Loading Animation */
